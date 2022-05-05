@@ -13,6 +13,30 @@ import (
 type server struct {
 }
 
+func (s *server) UpdateUser(ctx context.Context, customer *api.UpdateCustomer) (*api.ResCustomer, error) {
+	id, name, surname, email, password := customer.GetId(), customer.GetName(), customer.GetSurname(), customer.GetEmail(), customer.GetPassword()
+	fmt.Println("user id" + id)
+	fmt.Println("user password", password)
+	return &api.ResCustomer{
+		Name:    name,
+		Surname: surname,
+		Email:   email,
+	}, nil
+
+	panic("implement me")
+}
+
+func (s *server) DeleteUser(ctx context.Context, customerId *api.CustomerId) (*api.ResDeletedUser, error) {
+	id := customerId.GetId()
+	fmt.Printf(id + " silindi")
+	return &api.ResDeletedUser{
+		Email:   "emin@test",
+		Id:      "e3rwfr34",
+		Message: "user deleted",
+	}, nil
+	panic("implement me")
+}
+
 func (s *server) CreateUser(ctx context.Context, customer *api.Customer) (*api.ResCustomer, error) {
 	return &api.ResCustomer{
 		Name:    customer.GetName(),
@@ -45,4 +69,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Print("server stared on port 4040 ")
 }
