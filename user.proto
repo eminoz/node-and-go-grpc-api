@@ -4,9 +4,15 @@ option go_package = "api/";
 package userproto;
 service CustomerService{
     rpc CreateUser(Customer)    returns (resCustomer);
+    rpc UpdateUser(updateCustomer)  returns (resCustomer);
     rpc GetUser (CustomerId)    returns (resCustomer);
+    rpc DeleteUser(CustomerId)  returns (resDeletedUser);
 }
-
+message resDeletedUser{
+    string email=1;
+    string id=2;
+    string message=3;
+}
 message resCustomer {
     string name=1;
     string surname=2;
@@ -17,6 +23,13 @@ message Customer{
     string surname=2;
     string email=3;
     string password=4;
+}
+message updateCustomer{
+    string id =1;
+    string name=2;
+    string surname=3;
+    string email=4;
+    string password=5;
 }
 
 message CustomerId{

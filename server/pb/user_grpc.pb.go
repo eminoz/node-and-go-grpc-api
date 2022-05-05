@@ -23,7 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CustomerServiceClient interface {
 	CreateUser(ctx context.Context, in *Customer, opts ...grpc.CallOption) (*ResCustomer, error)
+	UpdateUser(ctx context.Context, in *UpdateCustomer, opts ...grpc.CallOption) (*ResCustomer, error)
 	GetUser(ctx context.Context, in *CustomerId, opts ...grpc.CallOption) (*ResCustomer, error)
+	DeleteUser(ctx context.Context, in *CustomerId, opts ...grpc.CallOption) (*ResDeletedUser, error)
 }
 
 type customerServiceClient struct {
@@ -43,9 +45,27 @@ func (c *customerServiceClient) CreateUser(ctx context.Context, in *Customer, op
 	return out, nil
 }
 
+func (c *customerServiceClient) UpdateUser(ctx context.Context, in *UpdateCustomer, opts ...grpc.CallOption) (*ResCustomer, error) {
+	out := new(ResCustomer)
+	err := c.cc.Invoke(ctx, "/userproto.CustomerService/UpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *customerServiceClient) GetUser(ctx context.Context, in *CustomerId, opts ...grpc.CallOption) (*ResCustomer, error) {
 	out := new(ResCustomer)
 	err := c.cc.Invoke(ctx, "/userproto.CustomerService/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *customerServiceClient) DeleteUser(ctx context.Context, in *CustomerId, opts ...grpc.CallOption) (*ResDeletedUser, error) {
+	out := new(ResDeletedUser)
+	err := c.cc.Invoke(ctx, "/userproto.CustomerService/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +77,9 @@ func (c *customerServiceClient) GetUser(ctx context.Context, in *CustomerId, opt
 // for forward compatibility
 type CustomerServiceServer interface {
 	CreateUser(context.Context, *Customer) (*ResCustomer, error)
+	UpdateUser(context.Context, *UpdateCustomer) (*ResCustomer, error)
 	GetUser(context.Context, *CustomerId) (*ResCustomer, error)
+	DeleteUser(context.Context, *CustomerId) (*ResDeletedUser, error)
 }
 
 // UnimplementedCustomerServiceServer must be embedded to have forward compatible implementations.
@@ -67,8 +89,14 @@ type UnimplementedCustomerServiceServer struct {
 func (UnimplementedCustomerServiceServer) CreateUser(context.Context, *Customer) (*ResCustomer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
+func (UnimplementedCustomerServiceServer) UpdateUser(context.Context, *UpdateCustomer) (*ResCustomer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
 func (UnimplementedCustomerServiceServer) GetUser(context.Context, *CustomerId) (*ResCustomer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedCustomerServiceServer) DeleteUser(context.Context, *CustomerId) (*ResDeletedUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedCustomerServiceServer) mustEmbedUnimplementedCustomerServiceServer() {}
 
@@ -101,6 +129,24 @@ func _CustomerService_CreateUser_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CustomerService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCustomer)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomerServiceServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userproto.CustomerService/UpdateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomerServiceServer).UpdateUser(ctx, req.(*UpdateCustomer))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CustomerService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CustomerId)
 	if err := dec(in); err != nil {
@@ -119,6 +165,24 @@ func _CustomerService_GetUser_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CustomerService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomerServiceServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userproto.CustomerService/DeleteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomerServiceServer).DeleteUser(ctx, req.(*CustomerId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CustomerService_ServiceDesc is the grpc.ServiceDesc for CustomerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -131,8 +195,16 @@ var CustomerService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CustomerService_CreateUser_Handler,
 		},
 		{
+			MethodName: "UpdateUser",
+			Handler:    _CustomerService_UpdateUser_Handler,
+		},
+		{
 			MethodName: "GetUser",
 			Handler:    _CustomerService_GetUser_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _CustomerService_DeleteUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
