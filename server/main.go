@@ -14,14 +14,12 @@ type server struct {
 }
 
 func (s *server) CreateUser(ctx context.Context, customer *api.Customer) (*api.ResCustomer, error) {
-	//fmt.Println(customer.Email)
 	return &api.ResCustomer{
 		Name:    customer.GetName(),
 		Surname: customer.GetSurname(),
 		Email:   customer.GetEmail(),
 	}, nil
 
-	panic("implement me")
 }
 
 func (s *server) GetUser(ctx context.Context, id *api.CustomerId) (*api.ResCustomer, error) {
@@ -32,7 +30,6 @@ func (s *server) GetUser(ctx context.Context, id *api.CustomerId) (*api.ResCusto
 		Email:   "customer email",
 	}, nil
 
-	panic("implement me")
 }
 
 func main() {
