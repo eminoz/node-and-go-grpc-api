@@ -43,7 +43,44 @@ app.get("/getuser/:id", (req, res, next) => {
     }
   );
 });
+app.put("/updateuser/:id", (req, res, next) => {
+  const { id } = req.params;
+  const { name, surname, email, password } = req.body;
+  customerService.UpdateUser(
+    { id, name, surname, email, password },
+    (err, response) => {
+      const { name, surname, email } = response;
+      const responseDate = {
+        name,
+        surname,
+        email,
+      };
+      res.json({
+        data: responseDate,
+      });
+    }
+  );
+});
 
+app.delete("/deleteuser/:id", (req, res, next) => {
+  const { id } = req.params;
+  customerService.DeleteUser(
+    {
+      Id: id,
+    },
+    (err, response) => {
+      const { email, id, message } = response;
+      const responseData = {
+        email,
+        id,
+        message,
+      };
+      res.json({
+        data: responseData,
+      });
+    }
+  );
+});
 app.listen(3000, () => {
   console.log(`client is running on 3000`);
 });
